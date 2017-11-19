@@ -22,7 +22,7 @@
         "label": "mongo"
       }
     },
-    "timestamp": "2017-11-19T17:50:01+11:00"
+    "timestamp": "2017-11-19T17:55:35+11:00"
   },
   "software": {
     "base": {
@@ -31,7 +31,7 @@
         "ManagedEngine",
         "ManagedService"
       ],
-      "publisher_namespace": "EnginesServices",
+      "publisher_namespace": "EnginesSystem",
       "type_path": "database/nosql/mongo",
       "service_handle_field": "database_name",
       "parent_image": "engines/servicebase",
