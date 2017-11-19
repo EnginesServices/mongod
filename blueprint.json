@@ -12,11 +12,146 @@
       "version": {
         "major": 0,
         "minor": 0,
-        "level": "alpha",
+        "level": "beta",
         "patch": 0
       }
-    }
+    },
+    "software": {
+      "display": {
+        "title": "Mongo database server",
+        "label": "mongo"
+      }
+    },
+    "timestamp": "2017-11-19T17:50:01+11:00"
   },
   "software": {
+    "base": {
+      "name": "mongo",
+      "accepts": [
+        "ManagedEngine",
+        "ManagedService"
+      ],
+      "publisher_namespace": "EnginesServices",
+      "type_path": "database/nosql/mongo",
+      "service_handle_field": "database_name",
+      "parent_image": "engines/servicebase",
+      "run_as_user": "mongo",
+      "deployment_type": "worker",
+      "memory": {
+        "required": 168,
+        "recommended": 220
+      },
+      "persistent": true
+    },
+    "scripts": {
+      "start": {
+        "language": "sh",
+        "content": "#!/bin/sh\r\n\r\n\r\nPID_FILE=/var/run/engines/mongodb.pid\r\nexport PID_FILE\r\n. /home/engines/functions/trap.sh\r\n\r\nmkdir -p /var/log/mongodb/\r\n \r\nmongod -v  -f /etc/mongod.conf  --directoryperdb  --dbpath /data/db/  --journal &\r\npid=$!\r\n\r\necho -n $pid >/var/run/engines/mongodb.pid\r\nif ! test -d /data/db/.priv\r\n then\r\n sleep 30\r\n  mkdir -p /data/db/.priv\r\n \t/home/firstrun.sh\r\nfi\r\n\r\nstartup_complete\r\n\r\nwait  \r\nexit_code=$?\r\n\r\nshutdown_complete"
+      },
+      "install": {
+        "language": "sh",
+        "content": "#!/bin/bash\r\nchown mongo /home/engines/scripts/configurators/saved ; chmod 700 /home/engines/scripts/configurators/saved"
+      }
+    },
+    "external_repositories": [
+      {
+        "source": "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen",
+        "key": "7F0CEB10"
+      }
+    ],
+    "system_packages": [
+      {
+        "package": "mongodb-org"
+      }
+    ],
+    "constants": [
+      {
+        "name": "backup_support",
+        "value": "true"
+      },
+      {
+        "name": "rails_flavor",
+        "value": "mongodb"
+      }
+    ],
+    "target_environment_variables": [
+      {
+        "variable_name": "db_password",
+        "environment_variable_name": "dbpasswd"
+      },
+      {
+        "variable_name": "database_name",
+        "environment_variable_name": "dbname"
+      },
+      {
+        "variable_name": "db_username",
+        "environment_variable_name": "dbname"
+      },
+      {
+        "variable_name": "database_host",
+        "environment_variable_name": "dbhost"
+      }
+    ],
+    "consumer_params": [
+      {
+        "name": "db_password",
+        "value": "_Engines_System(random(10))",
+        "mandatory": true,
+        "input": {
+          "type": "password_with_confirmation",
+          "label": "DB Password"
+        }
+      },
+      {
+        "name": "db_username",
+        "value": "_Engines_Builder(engine_name) ",
+        "mandatory": true,
+        "immutable": true,
+        "input": {
+          "type": "string",
+          "label": "DB User Name"
+        }
+      },
+      {
+        "name": "database_name",
+        "value": "_Engines_Builder(engine_name)",
+        "mandatory": true,
+        "immutable": true,
+        "input": {
+          "type": "boolean",
+          "label": "Database name"
+        }
+      },
+      {
+        "name": "database_host",
+        "value": "_Engines_System(mongo_host)",
+        "mandatory": true,
+        "input": {
+          "type": "string",
+          "label": "Database_host "
+        }
+      }
+    ],
+    "configurators": [
+      {
+        "name": "db_master_pass",
+        "label": "Set admin password",
+        "no_save": true,
+        "variables": [
+          {
+            "name": "db_master_pass",
+            "mandatory": true,
+            "input": {
+              "type": "password_with_confirmation",
+              "label": "Admin password"
+            }
+          }
+        ],
+        "set_script": {
+          "language": "sh",
+          "content": "#!/bin/bash\r\n\r\n. /home/engines/functions/params_to_env.sh\r\nparams_to_env\r\n\r\n\r\n required_values=\"db_master_pass\"\r\ncheck_required_values\r\n\r\ncat /home/tmpls/change_pass.tmpl | sed \"/DBPASSWD/s//$db_master_pass/\" | sed \"/DBUSER/s//admin/\"  > /tmp/change_pass_cmd.js\r\n pass=`cat  /data/db/.priv/db_master_pass`\r\n\r\nmongo -p $pass -u admin --authenticationDatabase admin < /tmp/change_pass_cmd.js&> /tmp/res\r\nres=`cat /tmp/res`\r\n\r\n\r\n\r\necho $res | grep -v ERROR\r\n \r\nif test $? -eq 0\r\n\tthen \r\n\t\techo -n $db_master_pass >  /data/db/.priv/db_master_pass\r\n\t\tchmod 600  /data/db/.priv/db_master_pass\r\n\t\techo \"Success\"\r\n\t\texit 0\r\n\tfi\r\n\t\r\n\techo \"Error:$res\"\r\n\texit -1"
+        }
+      }
+    ]
   }
 }
