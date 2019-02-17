@@ -22,11 +22,11 @@
         "label": "mongo"
       }
     },
-    "timestamp": "2019-02-17T20:53:47+11:00"
+    "timestamp": "2019-02-17T21:20:41+11:00"
   },
   "software": {
     "base": {
-      "name": "mongo",
+      "name": "mongod",
       "publisher_namespace": "EnginesSystem",
       "type_path": "database/nosql/mongo",
       "service_handle_field": "database_name",
@@ -38,7 +38,8 @@
         "required": 168,
         "recommended": 220
       },
-      "run_as_user": "mongo"
+      "run_as_user": "mongo",
+      "create_user": "0"
     },
     "disposition": {
       "persistent": true
