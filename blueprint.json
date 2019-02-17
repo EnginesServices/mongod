@@ -22,7 +22,7 @@
         "label": "mongo"
       }
     },
-    "timestamp": "2019-02-17T21:20:41+11:00"
+    "timestamp": "2019-02-17T23:31:38+11:00"
   },
   "software": {
     "base": {
@@ -86,7 +86,7 @@
       },
       {
         "variable_name": "db_username",
-        "environment_variable_name": "dbname"
+        "environment_variable_name": "db_username"
       },
       {
         "variable_name": "database_host",
@@ -111,7 +111,7 @@
       },
       {
         "name": "db_username",
-        "value": "_Engines_Builder(engine_name) ",
+        "value": "_Engines_Builder(engine_name)",
         "mandatory": true,
         "immutable": true,
         "ask_at_build_time": true,
