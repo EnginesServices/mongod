@@ -2,8 +2,8 @@
   "schema": {
     "type": "service_blueprint",
     "version": {
-      "major": 1,
-      "minor": 0
+      "major": 0,
+      "minor": 1
     },
     "origin": "Engines Developer Studio 0.2"
   },
@@ -22,25 +22,25 @@
         "label": "mongo"
       }
     },
-    "timestamp": "2017-11-19T17:55:35+11:00"
+    "timestamp": "2019-02-17T20:53:47+11:00"
   },
   "software": {
     "base": {
       "name": "mongo",
-      "accepts": [
-        "ManagedEngine",
-        "ManagedService"
-      ],
       "publisher_namespace": "EnginesSystem",
       "type_path": "database/nosql/mongo",
       "service_handle_field": "database_name",
       "parent_image": "engines/servicebase",
-      "run_as_user": "mongo",
       "deployment_type": "worker",
+      "default_stop_timeout": 0,
+      "restart_attempts": 0,
       "memory": {
         "required": 168,
         "recommended": 220
       },
+      "run_as_user": "mongo"
+    },
+    "disposition": {
       "persistent": true
     },
     "scripts": {
@@ -92,6 +92,12 @@
         "environment_variable_name": "dbhost"
       }
     ],
+    "consumers": {
+      "accepts": [
+        "ManagedEngine",
+        "ManagedService"
+      ]
+    },
     "consumer_params": [
       {
         "name": "db_password",
@@ -107,6 +113,7 @@
         "value": "_Engines_Builder(engine_name) ",
         "mandatory": true,
         "immutable": true,
+        "ask_at_build_time": true,
         "input": {
           "type": "string",
           "label": "DB User Name"
@@ -117,8 +124,9 @@
         "value": "_Engines_Builder(engine_name)",
         "mandatory": true,
         "immutable": true,
+        "ask_at_build_time": true,
         "input": {
-          "type": "boolean",
+          "type": "string",
           "label": "Database name"
         }
       },
