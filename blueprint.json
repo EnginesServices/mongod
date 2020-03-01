@@ -22,7 +22,7 @@
         "label": "mongo"
       }
     },
-    "timestamp": "2019-02-17T23:31:38+11:00"
+    "timestamp": "2020-03-01T11:29:09+11:00"
   },
   "software": {
     "base": {
@@ -86,7 +86,7 @@
       },
       {
         "variable_name": "db_username",
-        "environment_variable_name": "db_username"
+        "environment_variable_name": "dbuser"
       },
       {
         "variable_name": "database_host",
